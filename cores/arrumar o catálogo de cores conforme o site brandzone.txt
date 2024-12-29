@@ -1,0 +1,4 @@
+está errado:
+- amarelo claro
+- rosa claro
+- rosa escuro

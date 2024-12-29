@@ -1,0 +1,185 @@
+---
+title: "Calendários IBGE"
+author: "André Luiz Brito"
+format: pdf
+editor: visual
+---
+
+### Pacotes
+
+```{r}
+
+knitr::opts_chunk$set(echo = TRUE)
+
+if(!require("pacman")) install.packages("pacman")
+
+pacman::p_load(
+  beepr,     # beep
+  readxl,    # read from xlsx
+  tidyverse,
+  writexl,    # write to xlsx
+  ggplot2,
+  openxlsx
+    )
+
+```
+
+## PARÂMETROS
+
+```{r}
+
+# # path to output:
+# path.cores = "C:/andre/assessoria/2_tools/cores/cores.rdata"
+
+```
+
+### PALETA DE CORES DO BB
+
+```{r}
+
+# Define the color palette as a list
+cores <- list(
+  # paleta BB
+  "bb.amarelo"      = rgb(252,252, 48, maxColorValue = 255),
+  "bb.azul"         = rgb( 70, 94,255, maxColorValue = 255),
+  "bb.azul.escuro"  = rgb( 51, 51,189, maxColorValue = 255),
+  "bb.roxo.claro"   = rgb(189,182,255, maxColorValue = 255),
+  "bb.roxo.escuro"  = rgb(115, 92,198, maxColorValue = 255),
+  "bb.verde.claro"  = rgb(131,255,234, maxColorValue = 255),
+  "bb.verde.escuro" = rgb(  0,235,208, maxColorValue = 255),
+  "bb.rosa.claro"   = rgb(255,167,211, maxColorValue = 255),
+  "bb.rosa.escuro"  = rgb(255,110,145, maxColorValue = 255),
+  "bb.azul.claro"   = rgb( 84,220,252, maxColorValue = 255),
+  "bb.amarelo.claro"= rgb(255,247,181, maxColorValue = 255),
+  
+  # cinzas
+  "branco"       = rgb(255,255,255, maxColorValue = 255),
+  "preto"        = rgb(  0,  0,  0, maxColorValue = 255),
+  "cinza.claro"  = rgb(229,229,229, maxColorValue = 255),
+  "cinza.azulado"= rgb(153,171,183, maxColorValue = 255),
+  "grey80"       = "grey80",
+  "grey60"       = "grey60",
+  "grey40"       = "grey40",
+  "grey30"       = "grey30",
+  
+  # mapas
+  "verde"        = rgb(  0, 90, 50, maxColorValue = 255),
+  
+  # mapa mundi
+  "denim.claro"  = rgb(229,237,244, maxColorValue = 255),
+  "azul.oceano"  = rgb( 46,108,164, maxColorValue = 255),
+  "azul.marinho" = rgb(  0, 45, 75, maxColorValue = 255),
+  
+  # mapa da apresentação:
+  "uf.destaque"  = rgb( 65,121,172, maxColorValue = 255),
+  "uf.outros"    = rgb(179,201,222, maxColorValue = 255),
+  
+  # IDE IPE
+  "ide.ipe.rosa" = rgb(180,125,125, maxColorValue = 255),
+  "ide.ipe.amber"= rgb(255,192,  0, maxColorValue = 255),
+  "ide.ipe.verde"= rgb( 90,170,160, maxColorValue = 255),
+  "ide.ipe.azul" = rgb(  0, 45, 75, maxColorValue = 255),
+  
+  # IFDM:
+  "ifdm.laranja" = rgb(255,114,113, maxColorValue = 255),
+  "ifdm.amarelo" = rgb(255,222,114, maxColorValue = 255),
+  "ifdm.azul"    = rgb( 91,212,255, maxColorValue = 255),
+  "ifdm.verde"   = rgb(185,224,141, maxColorValue = 255)
+  
+  # # paleta para amber:
+  # "christine"    = rgb(228,108, 10, maxColorValue = 255),
+  # "light blue"   = rgb( 75,172,198, maxColorValue = 255),
+)
+
+# Save into a .RData file:
+save(
+  cores,
+  file = "cores.rdata")
+
+# load: 
+load("cores.rdata")
+
+# ----------------
+
+# Convert to dataframe
+df_cores <- do.call(rbind, lapply(names(cores), function(name) {
+  data.frame(cor = name, codigo = cores[[name]])
+}))
+
+# Adicionar a quarta coluna com o código da cor entre aspas
+df_cores$codigo_com_aspas <- paste0('"', df_cores$codigo, '"')
+
+# Create a workbook
+wb <- createWorkbook()
+
+# Add a worksheet
+addWorksheet(wb, "Sheet1")
+
+# Write the dataframe
+writeData(wb, "Sheet1", df_cores)
+
+# Apply colors to the third column based on the second column
+for (i in 1:nrow(df_cores)) {
+  color_style <- createStyle(fgFill = df_cores$codigo[i], fontColour = df_cores$codigo[i])
+  writeData(wb, "Sheet1", df_cores$codigo[i], startCol = 4, startRow = i + 1, colNames = FALSE)
+  addStyle(wb, "Sheet1", style = color_style, rows = i + 1, cols = 4, gridExpand = TRUE)
+}
+
+# Save the workbook
+saveWorkbook(wb, "cores.xlsx", overwrite = TRUE)
+
+```
+
+# CRIA UMA IMAGEM
+
+```{r}
+
+# Calculate the number of rows and columns in the grid
+n <- ceiling(sqrt(length(cores)))
+
+# Create a grid of positions manually to preserve the order
+x <- rep(1:n, each = n)
+y <- rev(rep(1:n, times = n))  # Reverse the y positions here
+grid <- data.frame(x = x[1:length(cores)], y = y[1:length(cores)])
+
+# Create a data frame with the colors and positions
+df <- data.frame(
+  color = factor(names(cores), levels = names(cores)),  # Keep the original order of colors
+  count = rep(1, length(cores)),  # Equal count for each color
+  x = grid$x,  # x position
+  y = grid$y  # y position
+)
+
+# Function to calculate the luminance of a color
+luminance <- function(color) {
+  rgb <- col2rgb(cores[[color]])
+  0.299*rgb[1,] + 0.587*rgb[2,] + 0.114*rgb[3,]
+}
+
+# Function to choose a readable color for the text
+text_color <- function(color) {
+  ifelse(luminance(color) > 128, "black", "white")
+}
+
+# Create the plot with squares
+p <- ggplot(df, aes(x = x, y = y, fill = color)) +
+  geom_tile(color = "black", lwd = 0.5) +  # Create the squares
+  # geom_text(aes(label = color, color = sapply(color, text_color)), size = 4) +  # Add the color names
+  geom_text(aes(label = paste(color, "\n", cores[color], sep = ""), color = sapply(color, text_color)), size = 3) +  # Add color names and RGB codes
+  scale_fill_manual(values = unlist(cores)) +  # Use the color palette
+  scale_color_identity() +  # Use the color specified in geom_text
+  theme_void() +  # Remove axes and labels
+  theme(plot.background = element_rect(fill = "black"),  # Set the background to black
+        legend.position = "none")  # Remove the legend
+
+# Display the plot
+plot(p)
+
+# Save the plot as a PNG file
+ggsave("cores.png", plot = p, width = 10, height = 10, dpi = 300, bg = "black")
+
+# Save the plot as a PDF file
+ggsave("cores.pdf", plot = p, width = 10, height = 10, device = "pdf", bg = "black")
+
+
+```

@@ -1,0 +1,7 @@
+caixa economica: RGB 0 92 169
+
+santander: RGB 204 0 0
+
+bradesco: RGB 229 23 63
+
+itau: RGB 255 98 0
