@@ -1,15 +1,13 @@
-
-# Function to check and install packages
-install_if_missing <- function(...) {
-  packages <- unlist(list(...))
-  for (package in packages) {
-    if (!require(package, character.only = TRUE)) {
-      install.packages(package, dependencies = TRUE)
-      library(package, character.only = TRUE)
+# Define a function to install and update packages
+install_and_update_packages <- function(...) {
+  packages <- c(...)
+  for (pkg in packages) {
+    if (!require(pkg, character.only = TRUE)) {
+      install.packages(pkg, method = "wininet")
     }
+    update.packages(pkg, ask = FALSE, method = "wininet")
   }
 }
 
-# Use the function by passing package names directly as arguments
-# install_if_missing("knitr", "kableExtra", "dplyr", "ggplot2") # Add your package names here
-
+# Call the function with the package names
+install_and_update_packages("janitor", "dplyr", "ggplot2", "tidyr")

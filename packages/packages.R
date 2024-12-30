@@ -56,7 +56,6 @@ pacman::p_load(
   scales,       # comma in numbers
   kableExtra,   # nice tables
   beepr         # beep
-
 )
 
 cat("para instalar pacotes dentro da rede do banco, use este comando: \ninstall.packages(\"nome-do-pacote\", method = \"wininet\")\n")
