@@ -8,15 +8,13 @@ install_and_update_packages <- function(...) {
       install.packages(pkg, method = "wininet")
     } 
   } 
-  message("All packages installed and loaded.")
+  message(" Example usage:\n install_and_update_packages(\"dplyr\", \"ggplot2\") \n All packages installed and loaded.
+          ")
 }
 
-# Example usage
-# install_and_update_packages("dplyr", "ggplot2")
-
 # ------------------------------------------------------------------------------
-# Call the function with the package names
-# install_and_update_packages("janitor", "dplyr", "ggplot2", "tidyr")
+# Example usage:
+# install_and_update_packages("dplyr", "ggplot2")
 # ------------------------------------------------------------------------------
 
 packages = c(
