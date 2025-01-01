@@ -1,13 +1,46 @@
+
 # Define a function to install and update packages
 install_and_update_packages <- function(...) {
   packages <- c(...)
+  
+  # Install the installr package if not already installed
+  if (!requireNamespace("installr", quietly = TRUE)) {
+    install.packages("installr")
+  }
+  
+  # Load the installr package
+  library(installr)
+  
+  # Install Rtools if not already installed
+  if (!installr::is.rtools_installed()) {
+    installr::install.Rtools(GUI = FALSE)
+  }
+  
   for (pkg in packages) {
     if (!require(pkg, character.only = TRUE)) {
-      install.packages(pkg, method = "wininet")
+      install.packages(pkg)  # Método padrão
     }
-    update.packages(pkg, ask = FALSE, method = "wininet")
+    update.packages(pkg, ask = FALSE)  # Método padrão
   }
+  
+  return(TRUE)
 }
+
+# ------------------------------------------------------------------------------
+# Call the function with the package names
+# install_and_update_packages("janitor", "dplyr", "ggplot2", "tidyr")
+# ------------------------------------------------------------------------------
+
+# # Define a function to install and update packages
+# install_and_update_packages <- function(...) {
+#   packages <- c(...)
+#   for (pkg in packages) {
+#     if (!require(pkg, character.only = TRUE)) {
+#       install.packages(pkg, method = "wininet")
+#     }
+#     update.packages(pkg, ask = FALSE, method = "wininet")
+#   }
+# }
 
 # ------------------------------------------------------------------------------
 # Call the function with the package names
