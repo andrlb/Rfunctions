@@ -70,3 +70,5 @@ packages = c(
 )
 
 packages
+
+install_and_update_packages(packages)
