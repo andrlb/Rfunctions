@@ -3,36 +3,16 @@
 install_and_update_packages <- function(...) {
   packages <- c(...)
   
-  # Install the installr package if not already installed
-  if (!requireNamespace("installr", quietly = TRUE)) {
-    install.packages("installr")
-  }
-  library(installr)
-  
-  # Install the devtools package if not already installed
-  if (!requireNamespace("devtools", quietly = TRUE)) {
-    install.packages("devtools")
-  }
-  library(devtools)
-  
-  # Check if Rtools is installed and install if necessary
-  if (!find_rtools()) {
-    message("Rtools not found. Installing Rtools...")
-    installr::install.Rtools()
-    if (!find_rtools()) {
-      stop("Rtools installation failed. Please install Rtools manually.")
-    }
-  }
-  
   for (pkg in packages) {
     if (!require(pkg, character.only = TRUE)) {
-      install.packages(pkg)  # Método padrão
-    }
-    update.packages(pkg, ask = FALSE)  # Método padrão
-  }
-  
-  return(TRUE)
+      install.packages(pkg, method = "wininet")
+    } 
+  } 
+  message("All packages installed and loaded.")
 }
+
+# Example usage
+# install_and_update_packages("dplyr", "ggplot2")
 
 # ------------------------------------------------------------------------------
 # Call the function with the package names
