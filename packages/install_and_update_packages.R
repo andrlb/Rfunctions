@@ -7,13 +7,21 @@ install_and_update_packages <- function(...) {
   if (!requireNamespace("installr", quietly = TRUE)) {
     install.packages("installr")
   }
-  
-  # Load the installr package
   library(installr)
   
-  # Install Rtools if not already installed
-  if (!installr::is.rtools_installed()) {
-    installr::install.Rtools(GUI = FALSE)
+  # Install the devtools package if not already installed
+  if (!requireNamespace("devtools", quietly = TRUE)) {
+    install.packages("devtools")
+  }
+  library(devtools)
+  
+  # Check if Rtools is installed and install if necessary
+  if (!find_rtools()) {
+    message("Rtools not found. Installing Rtools...")
+    installr::install.Rtools()
+    if (!find_rtools()) {
+      stop("Rtools installation failed. Please install Rtools manually.")
+    }
   }
   
   for (pkg in packages) {
