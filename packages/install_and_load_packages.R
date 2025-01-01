@@ -8,7 +8,7 @@ install_and_update_packages <- function(...) {
       install.packages(pkg, method = "wininet")
     } 
   } 
-  message(" Example usage:\n install_and_update_packages(\"dplyr\", \"ggplot2\") \n All packages installed and loaded.
+  message(" All packages installed and loaded. \n Example usage:\n install_and_update_packages(\"dplyr\", \"ggplot2\")
           ")
 }
 
