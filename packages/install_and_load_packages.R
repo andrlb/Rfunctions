@@ -80,3 +80,5 @@ packages = c(
 
 packages
 print(packages)
+message(" All packages installed and loaded. \n Example usage:\n install_and_update_packages(\"dplyr\", \"ggplot2\")
+          ")
