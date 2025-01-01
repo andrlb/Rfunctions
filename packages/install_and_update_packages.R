@@ -21,6 +21,7 @@ packages = c(
                #        purrr, tibble, stringr, forcats
   
   "reshape2",  # Data restructuring
+  "janitor",   # data cleaning
   
   # Data Visualization
   "ggthemes",  # extra themes, scales and geoms for ggplot
