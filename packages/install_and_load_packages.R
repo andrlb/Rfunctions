@@ -78,7 +78,4 @@ packages = c(
   "beepr"         # beep
 )
 
-packages
-print(packages)
-print(" All packages installed and loaded. \n Example usage:\n install_and_update_packages(\"dplyr\", \"ggplot2\")
-          ")
+install_and_update_packages(packages)
