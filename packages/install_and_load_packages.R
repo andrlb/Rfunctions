@@ -16,6 +16,7 @@ install_and_load_packages <- function(...) {
   for (pkg in packages) {
     if (!require(pkg, character.only = TRUE)) {
       install.packages(pkg, method = "wininet")
+      library(pkg)
     } 
   } 
   message(" All packages installed and loaded. \n Example usage:\n install_and_load_packages(\"dplyr\", \"ggplot2\")
