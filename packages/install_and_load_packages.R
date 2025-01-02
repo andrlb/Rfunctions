@@ -5,12 +5,12 @@
 # source("https://raw.githubusercontent.com/andrlb/Rfunctions/refs/heads/main/packages/install_and_load_packages.R")
 
 # Example usage:
-# install_and_update_packages("dplyr", "ggplot2")
+# install_and_load_packages("dplyr", "ggplot2")
 
 # ------------------------------------------------------------------------------
 
 # Define a function to install and update packages
-install_and_update_packages <- function(...) {
+install_and_load_packages <- function(...) {
   packages <- c(...)
   
   for (pkg in packages) {
@@ -18,7 +18,7 @@ install_and_update_packages <- function(...) {
       install.packages(pkg, method = "wininet")
     } 
   } 
-  message(" All packages installed and loaded. \n Example usage:\n install_and_update_packages(\"dplyr\", \"ggplot2\")
+  message(" All packages installed and loaded. \n Example usage:\n install_and_load_packages(\"dplyr\", \"ggplot2\")
           ")
 }
 
@@ -78,4 +78,4 @@ packages = c(
   "beepr"         # beep
 )
 
-install_and_update_packages(packages)
+install_and_load_packages(packages)
