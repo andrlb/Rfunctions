@@ -21,7 +21,7 @@ install_and_load_packages <- function(...) {
   } 
   message(
     " All packages installed and loaded. \n Example usage:\n install_and_load_packages(\"dplyr\", \"ggplot2\")"
-          )
+    )
 }
 
 packages = c(
